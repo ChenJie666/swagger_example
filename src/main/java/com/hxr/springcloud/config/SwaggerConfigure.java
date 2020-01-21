@@ -17,6 +17,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.ArrayList;
 
+/**
+ * swagger界面分为四部分：1.分组选择(合作开发时将自己的接口独立成一组)  2.基本信息  3.controller  4.model
+ */
+
 @Configuration
 @EnableSwagger2
 public class SwaggerConfigure {
@@ -31,7 +35,7 @@ public class SwaggerConfigure {
      */
 
     @Bean
-    public Docket docket(Environment environment){
+    public Docket docket1(Environment environment){
 
         Profiles profiles = Profiles.of("test", "dev"); //TODO 根据字符串获取Profiles对象
         boolean flag = environment.acceptsProfiles(profiles);   //TODO 从环境变量中判断当前使用的配置文件是否是"test"或"dev",若是则返回true，否则返回false
@@ -39,12 +43,20 @@ public class SwaggerConfigure {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo()) //TODO 设置swagger的描述界面的信息
                 .enable(flag)   //TODO 是否启用swagger，默认为true；如果为false，则网页不能访问swagger
-                .select()   //TODO
+                .groupName("分组1")   //TODO 该Docket所在的组
+                .select()   //TODO  将docket进行分装，用于调用后面的方法
                 .apis(RequestHandlerSelectors.basePackage("com.hxr.springcloud.controller"))    //TODO  .basePackage指定扫描的包   .any表示扫描全部   .none表示不扫描
 //                .apis(RequestHandlerSelectors.withMethodAnnotation(GetMapping.class))   //TODO  .withClassAnnotation扫描类上的注解，参数是注解的反射对象   .withMethodAnnotation扫描方法上的注解，参数是注解的反射对象
                 .paths(PathSelectors.any()) //TODO  .ant指定扫描的路径   .any表示扫描路径   .none表示不扫描
                 .build();
     }
+
+    @Bean
+    public Docket docket2(){
+        return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("分组二");
+    }
+
 
     private ApiInfo apiInfo(){  //TODO swagger的描述界面的信息
         return new ApiInfo(
